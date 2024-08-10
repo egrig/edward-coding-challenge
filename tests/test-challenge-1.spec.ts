@@ -1,5 +1,6 @@
 //Import Playwright's test and expect modules
 import { test, expect } from '@playwright/test'
+import { checkNumberOfTodosInLocalStorage, checkTodosInLocalStorage } from '../src/todo-app';
 
 //Describe block
 test.describe('New ToDo item positioning on list', () => {
@@ -26,6 +27,14 @@ test.describe('New ToDo item positioning on list', () => {
         //verify that the list contains all three items and the last item appears on the list
         const todoItems = page.locator('.todo-list li, view label');
         await expect(todoItems).toHaveText(TODO_ITEMS);
+
+        // leverage helper function to confirm text values in local storage is correct
+        for (const item of TODO_ITEMS) {
+            await checkTodosInLocalStorage(page, item);
+        }
+
+        // leverage helper function to confirm item count
+        await checkNumberOfTodosInLocalStorage(page, 3);
     });
 
     test.afterEach(async ({ page }) => {
@@ -43,5 +52,6 @@ test.describe('New ToDo item positioning on list', () => {
     
         // Confirm the cleanup worked by checking no todo items are present
         await expect(todoItems).toHaveCount(0);
+        await checkNumberOfTodosInLocalStorage(page, 0);
     });
 })
