@@ -1,3 +1,10 @@
+// Note that the test requirements are incorrect, because when the user clicks 'clear completed', the entries are completely removed. The correct test case should be
+// Given I have marked a todo item as complete
+// When I click “Clear Completed”
+// Then the completed todo item is removed from my todo list
+// And the todo item is moved to the Completed list
+
+
 // Import Playwright's test and expect modules
 import { test, expect } from '@playwright/test';
 import { checkNumberOfTodosInLocalStorage, checkNumberOfCompletedTodosInLocalStorage } from '../src/todo-app';
