@@ -1,11 +1,11 @@
 // Import Playwright's test and expect modules
 import { test, expect } from '@playwright/test';
-import { checkNumberOfTodosInLocalStorage, checkTodosInLocalStorage } from '../src/todo-app';
+import { checkNumberOfTodosInLocalStorage, checkNumberOfCompletedTodosInLocalStorage } from '../src/todo-app';
 
 // Describe block
-test.describe('TodoMVC - Delete a todo item', () => {
+test.describe('TodoMVC - Mark a todo item as completed', () => {
 
-    const TODO_ITEM = 'Delete this todo item';
+    const TODO_ITEM = 'Complete this todo item';
 
     test.beforeEach(async ({ page }) => {
         await page.goto('https://demo.playwright.dev/todomvc');
@@ -18,28 +18,27 @@ test.describe('TodoMVC - Delete a todo item', () => {
         // Verify the item has been added
         const todoItems = page.locator('.todo-list li .view label');
         await expect(todoItems).toHaveText([TODO_ITEM]);
-        await checkTodosInLocalStorage(page, TODO_ITEM);
         await checkNumberOfTodosInLocalStorage(page, 1);
     });
 
-    test('should delete a todo item using the red X and verify it is removed from the list', async ({ page }) => {
-        // Locate the todo item and its corresponding destroy button (red X)
-        const todoItem = page.locator('.todo-list li', { hasText: TODO_ITEM });
-        await todoItem.hover(); // Hovering to ensure the red X is visible
+    test('should mark a todo item as completed and verify it is marked with a green check mark and strikethrough', async ({ page }) => {
+        // Locate the todo item's corresponding checkbox to mark it as completed using data-testid
+        const todoItemCheckbox = page.locator('.toggle');
+        await todoItemCheckbox.click();
 
-        // Click the destroy button (red X) to delete the todo item
-        const destroyButton = todoItem.locator('.destroy');
-        await destroyButton.click();
+        // Verify that the item is crossed off with a strikethrough
+        const todoItemLabel = page.locator(`[data-testid="todo-item"]`);
+        await expect(todoItemLabel).toHaveClass(/completed/);
 
-        // Confirm the todo item has been removed
-        const todoItems = page.locator('.todo-list li .view label');
-        await expect(todoItems).not.toHaveText([TODO_ITEM]);
+        // ensure font has a line through it
+        const todoItemText = page.locator('.view').locator('label');
+        const textDecoration = await todoItemText.evaluate(element => getComputedStyle(element).textDecoration);
+        expect(textDecoration).toContain('line-through');
 
-        // Leverage helper function to confirm the text value is removed from local storage
-        await checkNumberOfTodosInLocalStorage(page, 0);
+        // Leverage helper function to confirm the number of completed items in local storage
+        await checkNumberOfCompletedTodosInLocalStorage(page, 1);
     });
 
-    // not needed for this test, but keeping it here for consistency
     test.afterEach(async ({ page }) => {
         // Use a locator to find all todo items
         const todoItems = page.locator('.todo-list li');
@@ -56,5 +55,6 @@ test.describe('TodoMVC - Delete a todo item', () => {
         // Confirm the cleanup worked by checking no todo items are present
         await expect(todoItems).toHaveCount(0);
         await checkNumberOfTodosInLocalStorage(page, 0);
+        await checkNumberOfCompletedTodosInLocalStorage(page, 0);
     });
 });
