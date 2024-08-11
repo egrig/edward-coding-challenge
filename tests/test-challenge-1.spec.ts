@@ -25,7 +25,7 @@ test.describe('New ToDo item positioning on list', () => {
         }
 
         //verify that the list contains all three items and the last item appears on the list
-        const todoItems = page.locator('.todo-list li, view label');
+        const todoItems = page.getByTestId('todo-title');
         await expect(todoItems).toHaveText(TODO_ITEMS);
 
         // leverage helper function to confirm text values in local storage is correct
@@ -39,7 +39,7 @@ test.describe('New ToDo item positioning on list', () => {
 
     test.afterEach(async ({ page }) => {
         // Use a locator to find all todo items
-        const todoItems = page.locator('.todo-list li');
+        const todoItems = page.getByTestId('todo-item');
     
         // Get the count of todo items
         const count = await todoItems.count();

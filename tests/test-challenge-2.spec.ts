@@ -17,7 +17,7 @@ test.describe('TodoMVC - Edit an existing todo item', () => {
         await newTodo.press('Enter');
 
         // Verify the item has been added
-        const todoItems = page.locator('.todo-list li .view label');
+        const todoItems = page.getByTestId('todo-title');
         await expect(todoItems).toHaveText([TODO_ITEM]);
         await checkTodosInLocalStorage(page, TODO_ITEM);
         await checkNumberOfTodosInLocalStorage(page, 1);
@@ -34,7 +34,7 @@ test.describe('TodoMVC - Edit an existing todo item', () => {
         await todoEditInput.press('Enter');
 
         // Verify that the item has been updated
-        const todoItems = page.locator('.todo-list li .view label');
+        const todoItems = page.getByTestId('todo-title');
         await expect(todoItems).toHaveText([UPDATED_TODO_ITEM]);
 
         // Leverage helper function to confirm the updated text value in local storage
@@ -43,7 +43,7 @@ test.describe('TodoMVC - Edit an existing todo item', () => {
 
     test.afterEach(async ({ page }) => {
         // Use a locator to find all todo items
-        const todoItems = page.locator('.todo-list li');
+        const todoItems = page.getByTestId('todo-item');
 
         // Get the count of todo items
         const count = await todoItems.count();

@@ -16,7 +16,7 @@ test.describe('TodoMVC - Delete a todo item', () => {
         await newTodo.press('Enter');
 
         // Verify the item has been added
-        const todoItems = page.locator('.todo-list li .view label');
+        const todoItems = page.getByTestId('todo-title');
         await expect(todoItems).toHaveText([TODO_ITEM]);
         await checkTodosInLocalStorage(page, TODO_ITEM);
         await checkNumberOfTodosInLocalStorage(page, 1);
@@ -32,7 +32,7 @@ test.describe('TodoMVC - Delete a todo item', () => {
         await destroyButton.click();
 
         // Confirm the todo item has been removed
-        const todoItems = page.locator('.todo-list li .view label');
+        const todoItems = page.getByTestId('todo-title');
         await expect(todoItems).not.toHaveText([TODO_ITEM]);
 
         // Leverage helper function to confirm the text value is removed from local storage
@@ -42,7 +42,7 @@ test.describe('TodoMVC - Delete a todo item', () => {
     // not needed for this test, but keeping it here for consistency
     test.afterEach(async ({ page }) => {
         // Use a locator to find all todo items
-        const todoItems = page.locator('.todo-list li');
+        const todoItems = page.getByTestId('todo-item');
 
         // Get the count of todo items
         const count = await todoItems.count();

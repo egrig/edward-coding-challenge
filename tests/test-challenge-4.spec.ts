@@ -16,7 +16,7 @@ test.describe('TodoMVC - Mark a todo item as completed', () => {
         await newTodo.press('Enter');
 
         // Verify the item has been added
-        const todoItems = page.locator('.todo-list li .view label');
+        const todoItems = page.getByTestId('todo-title');
         await expect(todoItems).toHaveText([TODO_ITEM]);
         await checkNumberOfTodosInLocalStorage(page, 1);
     });
@@ -27,11 +27,11 @@ test.describe('TodoMVC - Mark a todo item as completed', () => {
         await todoItemCheckbox.click();
 
         // Verify that the item is crossed off with a strikethrough
-        const todoItemLabel = page.locator(`[data-testid="todo-item"]`);
+        const todoItemLabel = page.getByTestId('todo-item');
         await expect(todoItemLabel).toHaveClass(/completed/);
 
         // ensure font has a line through it
-        const todoItemText = page.locator('.view').locator('label');
+        const todoItemText = page.getByTestId('todo-title');
         const textDecoration = await todoItemText.evaluate(element => getComputedStyle(element).textDecoration);
         expect(textDecoration).toContain('line-through');
 
@@ -41,7 +41,7 @@ test.describe('TodoMVC - Mark a todo item as completed', () => {
 
     test.afterEach(async ({ page }) => {
         // Use a locator to find all todo items
-        const todoItems = page.locator('.todo-list li');
+        const todoItems = page.getByTestId('todo-item');
 
         // Get the count of todo items
         const count = await todoItems.count();

@@ -26,7 +26,7 @@ test.describe('TodoMVC - View Active list shows only active (not completed) item
         await secondTodoToggle.click();
 
         // Verify the items have been added
-        const todoItems = page.locator('.todo-list li .view label');
+        const todoItems = page.getByTestId('todo-title');
         await expect(todoItems).toHaveText(TODO_ITEMS);
         await checkNumberOfTodosInLocalStorage(page, 3);
         await checkNumberOfCompletedTodosInLocalStorage(page, 1);
@@ -38,7 +38,7 @@ test.describe('TodoMVC - View Active list shows only active (not completed) item
         await activeLink.click();
 
         // Locate the todo list items
-        const todoItems = page.locator('.todo-list li');
+        const todoItems = page.getByTestId('todo-item');
 
         // Verify only active (not completed) todo items are shown
         const activeItems = [
@@ -58,7 +58,7 @@ test.describe('TodoMVC - View Active list shows only active (not completed) item
 
     test.afterEach(async ({ page }) => {
         // Use a locator to find all todo items
-        const todoItems = page.locator('.todo-list li');
+        const todoItems = page.getByTestId('todo-item');
 
         // Get the count of todo items
         const count = await todoItems.count();
